@@ -4,37 +4,123 @@
   <meta charset="UTF-8">
   <title>Student Subject Management</title>
   <style>
-    body {
-      font-family: Arial;
-      background: #f4f4f4;
-      padding: 20px;
-    }
-    h2 {
-      color: #333;
-    }
-    input, button {
-      padding: 8px;
-      margin: 5px;
-    }
-    table {
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    min-height: 100vh;
+    padding: 30px;
+    color: #333;
+  }
+
+  h1 {
+    text-align: center;
+    color: #fff;
+    margin-bottom: 30px;
+  }
+
+  h2 {
+    color: #444;
+    margin-bottom: 15px;
+  }
+
+  .box {
+    background: #ffffff;
+    padding: 20px;
+    margin: 20px auto;
+    max-width: 900px;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    transition: transform 0.3s ease;
+  }
+
+  .box:hover {
+    transform: translateY(-4px);
+  }
+
+  input {
+    width: calc(33% - 12px);
+    padding: 10px;
+    margin: 6px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    outline: none;
+    transition: border 0.3s;
+  }
+
+  input:focus {
+    border-color: #667eea;
+  }
+
+  button {
+    padding: 10px 18px;
+    margin: 10px 6px;
+    border: none;
+    border-radius: 6px;
+    background: #667eea;
+    color: #fff;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.2s;
+  }
+
+  button:hover {
+    background: #5a67d8;
+    transform: scale(1.05);
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+    background: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  thead {
+    background: #667eea;
+    color: #fff;
+  }
+
+  th, td {
+    padding: 12px;
+    text-align: center;
+  }
+
+  tbody tr:nth-child(even) {
+    background: #f3f4ff;
+  }
+
+  tbody tr:hover {
+    background: #e2e6ff;
+  }
+
+  .action-btn {
+    background: #38a169;
+  }
+
+  .action-btn:hover {
+    background: #2f855a;
+  }
+
+  .delete-btn {
+    background: #e53e3e;
+  }
+
+  .delete-btn:hover {
+    background: #c53030;
+  }
+
+  @media (max-width: 768px) {
+    input {
       width: 100%;
-      border-collapse: collapse;
-      margin-top: 15px;
     }
-    th, td {
-      border: 1px solid #ccc;
-      padding: 8px;
-      text-align: center;
-    }
-    button {
-      cursor: pointer;
-    }
-    .box {
-      background: #fff;
-      padding: 15px;
-      margin-bottom: 20px;
-      border-radius: 5px;
-    }
+  }
+
   </style>
 </head>
 <body>
@@ -141,8 +227,8 @@ async function loadStudents() {
         <td>${s.english}</td>
         <td>${s.maths}</td>
         <td>
-          <button onclick="deleteStudent(${s.rollno})">Delete</button>
-          <button onclick="updateStudent(${s.rollno})">Update</button>
+         <button class="delete-btn" onclick="deleteStudent(${s.rollno})">Delete</button>
+          <button class="action-btn" onclick="updateStudent(${s.rollno})">Update</button>
         </td>
       </tr>
     `;
