@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Student Subject Management</title>
+  <style>
+    body {
+      font-family: Arial;
+      background: #f4f4f4;
+      padding: 20px;
+    }
+    h2 {
+      color: #333;
+    }
+    input, button {
+      padding: 8px;
+      margin: 5px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: center;
+    }
+    button {
+      cursor: pointer;
+    }
+    .box {
+      background: #fff;
+      padding: 15px;
+      margin-bottom: 20px;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+
+<h1>📘 Student Subject Management</h1>
+
+<!-- REGISTER -->
+<div class="box">
+  <h2>Register</h2>
+  <input id="r_rollno" placeholder="Roll No">
+  <input id="r_name" placeholder="Name">
+  <input id="r_password" placeholder="Password">
+  <input id="r_tamil" placeholder="Tamil">
+  <input id="r_english" placeholder="English">
+  <input id="r_maths" placeholder="Maths">
+  <button onclick="register()">Register</button>
+</div>
+
+<!-- LOGIN -->
+<div class="box">
+  <h2>Login</h2>
+  <input id="l_rollno" placeholder="Roll No">
+  <input id="l_password" placeholder="Password">
+  <button onclick="login()">Login</button>
+</div>
+
+<!-- VIEW -->
+<div class="box">
+  <h2>Students List</h2>
+  <button onclick="loadStudents()">Load Data</button>
+  <table>
+    <thead>
+      <tr>
+        <th>Roll No</th>
+        <th>Name</th>
+        <th>Tamil</th>
+        <th>English</th>
+        <th>Maths</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody id="data"></tbody>
+  </table>
+</div>
+
+<script>
+let token = "";
+
+const API = "http://localhost:3000";
+
+// REGISTER
+async function register() {
+  const data = {
+    rollno: Number(r_rollno.value),
+    name: r_name.value,
+    password: r_password.value,
+    tamil: Number(r_tamil.value),
+    english: Number(r_english.value),
+    maths: Number(r_maths.value)
+  };
+
+  const res = await fetch(API + "/register", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data)
+  });
+
+  alert(await res.text());
+}
+
+// LOGIN
+async function login() {
+  const res = await fetch(API + "/login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      rollno: Number(l_rollno.value),
+      password: l_password.value
+    })
+  });
+
+  const data = await res.json();
+  token = data.token;
+  alert("Login successful");
+}
+
+// LOAD STUDENTS
+async function loadStudents() {
+  const res = await fetch(API + "/person", {
+    headers: {
+      Authorization: "Bearer " + token
+    }
+  });
+  const students = await res.json();
+  const tbody = document.getElementById("data");
+  tbody.innerHTML = "";
+
+  students.forEach(s => {
+    tbody.innerHTML += `
+      <tr>
+        <td>${s.rollno}</td>
+        <td>${s.name}</td>
+        <td>${s.tamil}</td>
+        <td>${s.english}</td>
+        <td>${s.maths}</td>
+        <td>
+          <button onclick="deleteStudent(${s.rollno})">Delete</button>
+          <button onclick="updateStudent(${s.rollno})">Update</button>
+        </td>
+      </tr>
+    `;
+  });
+}
+
+// DELETE
+async function deleteStudent(rollno) {
+  await fetch(API + "/person/" + rollno, {
+    method: "DELETE",
+    headers: {
+      Authorization: "Bearer " + token
+    }
+  });
+  loadStudents();
+}
+
+// UPDATE
+async function updateStudent(rollno) {
+  const tamil = prompt("New Tamil mark");
+  const english = prompt("New English mark");
+  const maths = prompt("New Maths mark");
+
+  await fetch(API + "/person/" + rollno, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + token
+    },
+    body: JSON.stringify({ tamil, english, maths })
+  });
+
+  loadStudents();
+}
+</script>
+
+</body>
+</html>
